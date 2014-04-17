@@ -26,3 +26,10 @@ while (<$sock>) {
 close $sock;
 print "Disconnected from $server";
 
+sub ping_req {
+	my ($sock, $str) = @_;
+	chomp($str);
+	$sock->print("PONG $str\n");
+	print "PONG $str\n";
+	return;
+}
