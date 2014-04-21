@@ -14,15 +14,7 @@ my @channel=qw(kalamangga.net);
 $SIG{INT} = \&quit_h;
 $SIG{TERM} = \&quit_h;
 
-print "Connecting to server : $server ";
-my $sock = IO::Socket::INET->new(PeerAddr=>$server,PeerPort=>$port,Proto=>'tcp')
-	or die "[error] $!\n";
-print "[connected]\n";
-$sock->print("USER $user $user $user $user\n");
-$sock->print("NICK $nick\n");
-for my $channel (@channel) {
-	$sock->print("JOIN #$channel\n");
-};
+connect_h();
 while (my $input = <$sock>) {
 	chomp $input;
 	if ($input =~ /^PING\s*:(.*?)$/i) {
@@ -36,6 +28,17 @@ while (my $input = <$sock>) {
 	};
 };
 
+sub connect_h {
+	print "Connecting to server : $server ";
+	my $sock = IO::Socket::INET->new(PeerAddr=>$server,PeerPort=>$port,Proto=>'tcp')
+		or die "[error] $!\n";
+	print "[connected]\n";
+	$sock->print("USER $user $user $user $user\n");
+	$sock->print("NICK $nick\n");
+	for my $channel (@channel) {
+		$sock->print("JOIN #$channel\n");
+	};
+};
 sub quit_h {
 	add_time("$!");
 	close $sock;
